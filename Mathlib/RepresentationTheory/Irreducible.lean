@@ -16,9 +16,9 @@ This file defines irreducible monoid representations.
 
 -/
 
-namespace Representation
-
 @[expose] public section
+
+namespace Representation
 
 open scoped MonoidAlgebra
 
@@ -40,7 +40,12 @@ theorem is_simple_module_iff_irreducible_ofModule (M : Type*) [AddCommGroup M] [
   rw [isSimpleModule_iff, isIrreducible_iff]
   exact OrderIso.isSimpleOrder_iff Subrepresentation.submoduleSubrepresentationOrderIso
 
+namespace IsIrreducible
+
 variable {ρ σ} (f : IntertwiningMap ρ σ) [IsIrreducible ρ]
+
+instance : IsSimpleModule k[G] ρ.asModule :=
+  (irreducible_iff_isSimpleModule_asModule ρ).mp inferInstance
 
 open Function IntertwiningMap
 
@@ -52,10 +57,6 @@ theorem injective_or_eq_zero : Injective f ∨ f = 0 := by
 
 theorem bijective_or_eq_zero [IsIrreducible σ] : Bijective f ∨ f = 0 :=
     by
-  have _ : IsSimpleModule k[G] ρ.asModule :=
-    (irreducible_iff_isSimpleModule_asModule ρ).mp (by assumption)
-  have _ : IsSimpleModule k[G] σ.asModule :=
-    (irreducible_iff_isSimpleModule_asModule σ).mp (by assumption)
   rw [← LinearEquiv.map_eq_zero_iff (equivLinearMapAsModule ρ σ)]
   exact LinearMap.bijective_or_eq_zero (equivLinearMapAsModule ρ σ f)
 
@@ -64,20 +65,17 @@ variable [FiniteDimensional k V] [IsAlgClosed k]
 variable (f : IntertwiningMap ρ ρ) in
 theorem algebraMap_intertwiningMap_bijective_of_isAlgClosed :
     Bijective (algebraMap k (IntertwiningMap ρ ρ)) := by
-  have _ : IsSimpleModule k[G] ρ.asModule :=
-    (irreducible_iff_isSimpleModule_asModule ρ).mp (by assumption)
   have : Bijective (algebraMap k (Module.End k[G] ρ.asModule)) :=
     IsSimpleModule.algebraMap_end_bijective_of_isAlgClosed k
   exact (Bijective.of_comp_iff' (IntertwiningMap.equivAlgEnd (ρ:=ρ)).bijective _).1 this
 
-theorem finrank_eq_one_of_isMulCommutative (ρ : Representation k G V) [IsIrreducible ρ]
+include ρ in
+variable (ρ) in
+theorem finrank_eq_one_of_isMulCommutative
     [IsMulCommutative G] : Module.finrank k V = 1 := by
-  have _ : IsSimpleModule k[G] ρ.asModule :=
-    (irreducible_iff_isSimpleModule_asModule ρ).mp (by assumption)
-  have _ : FiniteDimensional k ρ.asModule := by assumption
   have _ : IsMulCommutative k[G] := ⟨⟨mul_comm⟩⟩
   exact IsSimpleModule.finrank_eq_one_of_isMulCommutative k[G] ρ.asModule k
 
-end
+end IsIrreducible
 
 end Representation
