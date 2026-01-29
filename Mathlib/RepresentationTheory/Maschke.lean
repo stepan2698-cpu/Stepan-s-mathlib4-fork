@@ -35,9 +35,6 @@ of a finite group is semisimple (i.e. a direct sum of irreducibles).
 
 @[expose] public section
 
-
-universe u v w
-
 noncomputable section
 
 open Module MonoidAlgebra
@@ -60,9 +57,9 @@ namespace LinearMap
 
 -- At first we work with any `[CommRing k]`, and add the assumption that
 -- `IsUnit (Fintype.card G : k)` when it is required.
-variable {k : Type u} [CommRing k] {G : Type u} [Group G]
-variable {V : Type v} [AddCommGroup V] [Module k V] [Module k[G] V] [IsScalarTower k k[G] V]
-variable {W : Type w} [AddCommGroup W] [Module k W] [Module k[G] W] [IsScalarTower k k[G] W]
+variable {k : Type*} [CommRing k] {G : Type u} [Group G]
+variable {V : Type*} [AddCommGroup V] [Module k V] [Module k[G] V] [IsScalarTower k k[G] V]
+variable {W : Type*} [AddCommGroup W] [Module k W] [Module k[G] W] [IsScalarTower k k[G] W]
 variable (π : W →ₗ[k] V)
 
 /-- We define the conjugate of `π` by `g`, as a `k`-linear map. -/
@@ -136,10 +133,10 @@ end
 namespace MonoidAlgebra
 
 -- Now we work over a `[Field k]`.
-variable {k : Type u} [Field k] {G : Type u} [Fintype G] [NeZero (Fintype.card G : k)]
+variable {k : Type*} [Field k] {G : Type u} [Fintype G] [NeZero (Fintype.card G : k)]
 variable [Group G]
-variable {V : Type u} [AddCommGroup V] [Module k[G] V]
-variable {W : Type u} [AddCommGroup W] [Module k[G] W]
+variable {V : Type*} [AddCommGroup V] [Module k[G] V]
+variable {W : Type*} [AddCommGroup W] [Module k[G] W]
 
 theorem exists_leftInverse_of_injective (f : V →ₗ[k[G]] W) (hf : LinearMap.ker f = ⊥) :
     ∃ g : W →ₗ[k[G]] V, g.comp f = .id := by
