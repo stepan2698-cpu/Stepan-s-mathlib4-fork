@@ -313,7 +313,7 @@ def fixingSubgroup_union_to_fixingSubgroup_of_fixingSubgroup :
       simp only [← SetLike.coe_eq_coe, SubMulAction.val_smul_of_tower]
       exact (mem_fixingSubgroup_union_iff.mp m.prop).2 ⟨x, hx'⟩⟩
   map_one' := by simp
-  map_mul' _ _ := by simp; rfl
+  map_mul' _ _ := by simp
 
 variable (M s t) in
 /-- The identity between the iterated `SubMulAction`

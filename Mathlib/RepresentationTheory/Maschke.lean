@@ -57,7 +57,7 @@ namespace LinearMap
 
 -- At first we work with any `[CommRing k]`, and add the assumption that
 -- `IsUnit (Fintype.card G : k)` when it is required.
-variable {k : Type*} [CommRing k] {G : Type u} [Group G]
+variable {k : Type*} [CommRing k] {G : Type*} [Group G]
 variable {V : Type*} [AddCommGroup V] [Module k V] [Module k[G] V] [IsScalarTower k k[G] V]
 variable {W : Type*} [AddCommGroup W] [Module k W] [Module k[G] W] [IsScalarTower k k[G] W]
 variable (π : W →ₗ[k] V)

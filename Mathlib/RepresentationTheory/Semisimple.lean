@@ -5,7 +5,8 @@ Authors: Stepan Nesterov
 -/
 module
 
-public import Mathlib
+public import Mathlib.RepresentationTheory.Maschke
+public import Mathlib.RepresentationTheory.Irreducible
 
 /-!
 # Semisimple representations
