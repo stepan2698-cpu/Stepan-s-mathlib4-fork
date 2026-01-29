@@ -133,7 +133,7 @@ end
 namespace MonoidAlgebra
 
 -- Now we work over a `[Field k]`.
-variable {k : Type*} [Field k] {G : Type u} [Fintype G] [NeZero (Fintype.card G : k)]
+variable {k : Type*} [Field k] {G : Type*} [Fintype G] [NeZero (Fintype.card G : k)]
 variable [Group G]
 variable {V : Type*} [AddCommGroup V] [Module k[G] V]
 variable {W : Type*} [AddCommGroup W] [Module k[G] W]
