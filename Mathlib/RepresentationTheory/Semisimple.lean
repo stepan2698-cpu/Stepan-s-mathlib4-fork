@@ -11,35 +11,37 @@ public import Mathlib.RepresentationTheory.Irreducible
 /-!
 # Semisimple representations
 
-This file defines semisimple monoid representations.
+This file defines the typeclass `IsSemisimpleRepresentation` for semisimple monoid representations.
 
 -/
 
 namespace Representation
 
+variable {k G V : Type*}
+
 @[expose] public section
 
 open scoped MonoidAlgebra
 
-universe u v w
 
-variable {k G V : Type*} [Monoid G] [Field k] [AddCommGroup V] [Module k V]
+
+variable [Monoid G] [Field k] [AddCommGroup V] [Module k V]
     (ρ : Representation k G V)
 
 /-- A representation is semisimple when every subrepresentation has a complement, or equivalently,
   the representation is a direct sum of irreducible representations. -/
-@[mk_iff] class IsSemisimpleRepresentation extends
+abbrev IsSemisimpleRepresentation :=
   ComplementedLattice (Subrepresentation ρ)
 
 theorem isSemisimpleRepresentation_iff_isSemisimpleModule_asModule :
     IsSemisimpleRepresentation ρ ↔ IsSemisimpleModule k[G] ρ.asModule := by
-  rw [isSemisimpleModule_iff, isSemisimpleRepresentation_iff]
+  rw [isSemisimpleModule_iff]
   exact OrderIso.complementedLattice_iff Subrepresentation.subrepresentationSubmoduleOrderIso
 
 theorem isSemisimpleModule_iff_isSemisimpleRepresentation_ofModule (M : Type*) [AddCommGroup M]
     [Module k[G] M] : IsSemisimpleModule k[G] M ↔
     IsSemisimpleRepresentation (ofModule (k := k) (G := G) M) := by
-  rw [isSemisimpleModule_iff, isSemisimpleRepresentation_iff]
+  rw [isSemisimpleModule_iff]
   exact OrderIso.complementedLattice_iff Subrepresentation.submoduleSubrepresentationOrderIso
 
 theorem isSemisimpleRepresentation_of_isIrreducible (h : IsIrreducible ρ) :
