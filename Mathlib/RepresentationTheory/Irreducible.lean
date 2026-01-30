@@ -50,8 +50,6 @@ instance : IsSimpleModule k[G] ρ.asModule :=
 open Function IntertwiningMap
 
 theorem injective_or_eq_zero : Injective f ∨ f = 0 := by
-  have _ : IsSimpleModule k[G] ρ.asModule :=
-    (irreducible_iff_isSimpleModule_asModule ρ).mp (by assumption)
   rw [← LinearEquiv.map_eq_zero_iff (equivLinearMapAsModule ρ σ)]
   exact LinearMap.injective_or_eq_zero (equivLinearMapAsModule ρ σ f)
 
