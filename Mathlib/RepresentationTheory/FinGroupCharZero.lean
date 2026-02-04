@@ -116,16 +116,16 @@ If `G` is finite and `k` an algebraically closed field of characteristic `0`,
 then an object of `FDRep k G` is simple if and only if its character has norm `1`.
 -/
 lemma simple_iff_char_is_norm_one [CharZero k] (V : FDRep k G) :
-    Simple V ↔ ∑ g : G, V.character g * V.character g⁻¹ = Fintype.card G where
+    Simple V ↔ ∑ g : G, V.character g * V.character g⁻¹ = Nat.card G where
   mp h := by
-    have := invertibleOfNonzero (NeZero.ne (Fintype.card G : k))
+    have := invertibleOfNonzero (NeZero.ne (Nat.card G : k))
     classical
-    have : ⅟(Fintype.card G : k) • ∑ g, V.character g * V.character g⁻¹ = 1 := by
+    have : ⅟(Nat.card G : k) • ∑ g, V.character g * V.character g⁻¹ = 1 := by
       simpa only [Nonempty.intro (Iso.refl V), ↓reduceIte] using char_orthonormal V V
     apply_fun (· * (Fintype.card G : k)) at this
     rwa [mul_comm, ← smul_eq_mul, smul_smul, mul_invOf_self, smul_eq_mul, one_mul, one_mul] at this
   mpr h := by
-    have := invertibleOfNonzero (NeZero.ne (Fintype.card G : k))
+    have := invertibleOfNonzero (NeZero.ne (Nat.card G : k))
     have eq := FDRep.scalar_product_char_eq_finrank_equivariant V V
     rw [h] at eq
     simp only [invOf_eq_inv, smul_eq_mul, inv_mul_cancel_of_invertible] at eq
