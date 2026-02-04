@@ -172,13 +172,20 @@ instance [AddGroup G] : IsSemisimpleRing (AddMonoidAlgebra k G) :=
     rwa [Nat.card_congr Multiplicative.toAdd]
   (AddMonoidAlgebra.toMultiplicativeAlgEquiv k G (R := ℕ)).toRingEquiv.symm.isSemisimpleRing
 
-variable (ρ : Representation k G V)
+section
+
+variable {G k V : Type*} [Group G] [Field k] [Finite G] [NeZero (Nat.card G : k)] [AddCommGroup V]
+  [Module k V] (ρ : Representation k G V)
+
+open Representation
 
 theorem isSemisimpleRepresentation_of_card_neZero : IsSemisimpleRepresentation ρ := by
   rw [isSemisimpleRepresentation_iff_isSemisimpleModule_asModule]
   infer_instance
 
 instance : IsSemisimpleRepresentation ρ := isSemisimpleRepresentation_of_card_neZero ρ
+
+end
 
 end Submodule
 
