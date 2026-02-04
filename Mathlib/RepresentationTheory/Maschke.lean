@@ -9,6 +9,7 @@ public import Mathlib.Algebra.Group.TypeTags.Finite
 public import Mathlib.Algebra.MonoidAlgebra.Basic
 public import Mathlib.LinearAlgebra.Basis.VectorSpace
 public import Mathlib.RingTheory.SimpleModule.Basic
+public import Mathlib.RepresentationTheory.Semisimple
 
 /-!
 # Maschke's theorem
@@ -81,7 +82,9 @@ theorem conjugate_i (h : ∀ v : V, π (i v) = v) (g : G) (v : V) :
 
 end
 
-variable (G) [Fintype G]
+variable (G) [Finite G]
+
+local instance : Fintype G := Fintype.ofFinite G
 
 /-- The sum of the conjugates of `π` by each element `g : G`, as a `k`-linear map.
 
@@ -114,15 +117,16 @@ def equivariantProjection : W →ₗ[k[G]] V :=
   Ring.inverse (Fintype.card G : k) • π.sumOfConjugatesEquivariant G
 
 theorem equivariantProjection_apply (v : W) :
-    π.equivariantProjection G v = Ring.inverse (Fintype.card G : k) • ∑ g : G, π.conjugate g v := by
-  simp only [equivariantProjection, smul_apply, sumOfConjugatesEquivariant_apply]
+    π.equivariantProjection G v = Ring.inverse (Nat.card G : k) • ∑ g : G, π.conjugate g v := by
+  simp only [equivariantProjection, smul_apply, sumOfConjugatesEquivariant_apply,
+    Fintype.card_eq_nat_card]
 
-theorem equivariantProjection_condition (hcard : IsUnit (Fintype.card G : k))
+theorem equivariantProjection_condition (hcard : IsUnit (Nat.card G : k))
     (h : ∀ v : V, π (i v) = v) (v : V) : (π.equivariantProjection G) (i v) = v := by
   rw [equivariantProjection_apply]
   simp only [conjugate_i π i h]
   rw [Finset.sum_const, Finset.card_univ, ← Nat.cast_smul_eq_nsmul k, smul_smul,
-    Ring.inverse_mul_cancel _ hcard, one_smul]
+    Fintype.card_eq_nat_card, Ring.inverse_mul_cancel _ hcard, one_smul]
 
 end
 
@@ -133,7 +137,7 @@ end
 namespace MonoidAlgebra
 
 -- Now we work over a `[Field k]`.
-variable {k : Type*} [Field k] {G : Type*} [Fintype G] [NeZero (Fintype.card G : k)]
+variable {k : Type*} [Field k] {G : Type*} [Finite G] [NeZero (Nat.card G : k)]
 variable [Group G]
 variable {V : Type*} [AddCommGroup V] [Module k[G] V]
 variable {W : Type*} [AddCommGroup W] [Module k[G] W]
@@ -164,9 +168,17 @@ instance : IsSemisimpleModule k[G] V where
   exists_isCompl := exists_isCompl
 
 instance [AddGroup G] : IsSemisimpleRing (AddMonoidAlgebra k G) :=
-  haveI : NeZero (Fintype.card (Multiplicative G) : k) := by
-    rwa [Fintype.card_congr Multiplicative.toAdd]
+  haveI : NeZero (Nat.card (Multiplicative G) : k) := by
+    rwa [Nat.card_congr Multiplicative.toAdd]
   (AddMonoidAlgebra.toMultiplicativeAlgEquiv k G (R := ℕ)).toRingEquiv.symm.isSemisimpleRing
+
+variable (ρ : Representation k G V)
+
+theorem isSemisimpleRepresentation_of_card_neZero : IsSemisimpleRepresentation ρ := by
+  rw [isSemisimpleRepresentation_iff_isSemisimpleModule_asModule]
+  infer_instance
+
+instance : IsSemisimpleRepresentation ρ := isSemisimpleRepresentation_of_card_neZero ρ
 
 end Submodule
 
