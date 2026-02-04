@@ -33,13 +33,13 @@ if and only if `∑ g : G, V.character g * V.character g⁻¹ = Fintype.card G`.
 
 universe u
 
-variable {k : Type u} [Field k] {G : Type u} [Fintype G] [Group G]
+variable {k : Type u} [Field k] {G : Type u} [Finite G] [Group G]
 
 open CategoryTheory Limits
 
 namespace Rep
 
-variable [NeZero (Fintype.card G : k)]
+variable [NeZero (Nat.card G : k)]
 
 /--
 If `G` is finite and its order is nonzero in the field `k`, then every object of
@@ -68,14 +68,14 @@ namespace FDRep
 If `G` is finite and its order is nonzero in the field `k`, then every object of
 `FDRep k G` is injective.
 -/
-instance [NeZero (Fintype.card G : k)] (V : FDRep k G) : Injective V :=
+instance [NeZero (Nat.card G : k)] (V : FDRep k G) : Injective V :=
   (forget₂ (FDRep k G) (Rep k G)).injective_of_map_injective inferInstance
 
 /--
 If `G` is finite and its order is nonzero in the field `k`, then every object of
 `FDRep k G` is projective.
 -/
-instance [NeZero (Fintype.card G : k)] (V : FDRep k G) : Projective V :=
+instance [NeZero (Nat.card G : k)] (V : FDRep k G) : Projective V :=
   (forget₂ (FDRep k G) (Rep k G)).projective_of_map_projective inferInstance
 
 variable [IsAlgClosed k]
@@ -85,7 +85,7 @@ If `G` is finite and its order is nonzero in an algebraically closed field `k`,
 then an object of `FDRep k G` is simple if and only if its space of endomorphisms is
 a `k`-vector space of dimension `1`.
 -/
-lemma simple_iff_end_is_rank_one [NeZero (Fintype.card G : k)] (V : FDRep k G) :
+lemma simple_iff_end_is_rank_one [NeZero (Nat.card G : k)] (V : FDRep k G) :
     Simple V ↔ Module.finrank k (V ⟶ V) = 1 where
   mp h := finrank_endomorphism_simple_eq_one k V
   mpr h := by
