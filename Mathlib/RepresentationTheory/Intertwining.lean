@@ -211,6 +211,12 @@ end IntertwiningMap
 @[ext]
 structure Equivalence extends IntertwiningMap ρ σ, V ≃+ W
 
+/-- The additive equivalence of types underlying an equivalence of representations. -/
+add_decl_doc Equivalence.toAddEquiv
+
+/-- The intertwining map underlying an equivalence of representations. -/
+add_decl_doc Equivalence.toIntertwiningMap
+
 namespace Equivalence
 
 variable {ρ σ} (φ : Equivalence ρ σ)
