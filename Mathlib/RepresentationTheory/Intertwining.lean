@@ -207,6 +207,7 @@ def centralMul (g : G) (hg : g ∈ Submonoid.center G) : IntertwiningMap ρ ρ w
 end IntertwiningMap
 
 
+/-- Equivalence between representation is a bijective intertwining map. -/
 @[ext]
 structure Equivalence extends IntertwiningMap ρ σ, V ≃+ W
 
@@ -214,6 +215,7 @@ namespace Equivalence
 
 variable {ρ σ} (φ : Equivalence ρ σ)
 
+/-- Underlying linear isomorphism of an equivalence of representations. -/
 def EquivalencetoLinearEquiv : V ≃ₗ[A] W :=
   AddEquiv.toLinearEquiv φ.toAddEquiv φ.toLinearMap.map_smul
 
