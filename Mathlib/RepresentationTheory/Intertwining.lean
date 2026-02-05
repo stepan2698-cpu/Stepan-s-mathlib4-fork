@@ -204,4 +204,53 @@ def centralMul (g : G) (hg : g ∈ Submonoid.center G) : IntertwiningMap ρ ρ w
 
 end IntertwiningMap
 
+
+@[ext]
+structure Equivalence extends IntertwiningMap ρ σ, V ≃+ W
+
+namespace Equivalence
+
+variable {ρ σ} (φ : Equivalence ρ σ)
+
+def EquivalencetoLinearEquiv : V ≃ₗ[A] W :=
+  AddEquiv.toLinearEquiv φ.toAddEquiv φ.toLinearMap.map_smul
+
+@[simp]
+theorem toLinearEquiv_toLinearMap_eq_toIntertwiningMap_toLinearMap :
+  LinearEquiv.toLinearMap φ.EquivalencetoLinearEquiv = φ.toIntertwiningMap.toLinearMap := rfl
+
+@[simp]
+theorem equivalencetoLinearEquiv_apply (v : V) :
+  (EquivalencetoLinearEquiv φ) v = φ.toIntertwiningMap v := rfl
+
+theorem conj (g : G) : σ g = (EquivalencetoLinearEquiv φ).conj (ρ g) := by
+  rw [LinearMap.ext_iff]
+  intro w
+  simp only [LinearEquiv.conj_apply_apply, equivalencetoLinearEquiv_apply,
+    φ.toIntertwiningMap.isIntertwining]
+  rw [← equivalencetoLinearEquiv_apply, LinearEquiv.apply_symm_apply]
+
+end Equivalence
+
+end
+
+namespace Equivalence
+
+variable {G k V W : Type*} [Group G] [Field k] [AddCommGroup V] [Module k V] [AddCommGroup W]
+    [Module k W] [FiniteDimensional k V] [FiniteDimensional k W]
+    (ρ : Representation k G V) (σ : Representation k G W)
+
+noncomputable def dualTensorHom_equivalence : Equivalence (tprod ρ.dual σ) (linHom ρ σ) where
+  toAddEquiv := dualTensorHomEquivOfBasis (R := k) (M := V) (N := W)
+      (b := Module.Free.chooseBasis k V)
+  map_smul' := dualTensorHomEquivOfBasis (R := k) (M := V) (N := W)
+      (b := Module.Free.chooseBasis k V).map_smul
+  isIntertwining' g v := by
+    simpa [tprod_apply] using
+      (congrArg (fun f => f v)
+        (dualTensorHom_comm (ρV := ρ) (ρW := σ) (k := k) (V := V) (W := W) g))
+
+
+end Equivalence
+
 end Representation
