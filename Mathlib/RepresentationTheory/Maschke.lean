@@ -84,6 +84,8 @@ end
 
 variable (G) [Finite G]
 
+set_option linter.style.docString.empty false in
+/-- -/
 local instance : Fintype G := Fintype.ofFinite G
 
 /-- The sum of the conjugates of `π` by each element `g : G`, as a `k`-linear map.
