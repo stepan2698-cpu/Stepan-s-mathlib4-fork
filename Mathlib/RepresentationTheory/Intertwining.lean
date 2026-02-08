@@ -250,7 +250,7 @@ variable {G k V W : Type*} [Group G] [Field k] [AddCommGroup V] [Module k V] [Ad
     [Module k W] [FiniteDimensional k V] [FiniteDimensional k W]
     (ρ : Representation k G V) (σ : Representation k G W)
 
-/-- Promotes dualTensorHom to an equivalence of representations. -/
+/-- dualTensorHom as an equivalence of representations. -/
 noncomputable def dualTensorHom_equivalence : Equivalence (tprod ρ.dual σ) (linHom ρ σ) where
   toAddEquiv := dualTensorHomEquivOfBasis (R := k) (M := V) (N := W)
       (b := Module.Free.chooseBasis k V)
