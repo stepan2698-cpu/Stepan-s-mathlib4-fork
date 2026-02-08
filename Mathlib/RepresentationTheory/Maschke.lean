@@ -82,11 +82,7 @@ theorem conjugate_i (h : ∀ v : V, π (i v) = v) (g : G) (v : V) :
 
 end
 
-variable (G) [Finite G]
-
-set_option linter.style.docString.empty false in
-/-- -/
-local instance : Fintype G := Fintype.ofFinite G
+variable (G) [Fintype G]
 
 /-- The sum of the conjugates of `π` by each element `g : G`, as a `k`-linear map.
 
@@ -155,6 +151,7 @@ theorem exists_leftInverse_of_injective (f : V →ₗ[k[G]] W) (hf : LinearMap.k
   have hφ : ∀ (x : V), φ (f x) = x := by
     apply LinearMap.leftInverse_apply_of_inj
     simp [hf]
+  have _ : Fintype G := Fintype.ofFinite G
   refine ⟨φ.equivariantProjection G, LinearMap.ext ?_⟩
   exact φ.equivariantProjection_condition G _ (.mk0 _ <| NeZero.ne _) <| hφ
 

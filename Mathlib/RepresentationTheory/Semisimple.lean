@@ -40,14 +40,6 @@ theorem isSemisimpleModule_iff_isSemisimpleRepresentation_ofModule (M : Type*) [
   rw [isSemisimpleModule_iff]
   exact OrderIso.complementedLattice_iff Subrepresentation.submoduleSubrepresentationOrderIso
 
-theorem isSemisimpleRepresentation_of_isIrreducible (h : IsIrreducible ρ) :
-    IsSemisimpleRepresentation ρ := by
-  rw [irreducible_iff_isSimpleModule_asModule] at h
-  rw [isSemisimpleRepresentation_iff_isSemisimpleModule_asModule]
-  infer_instance
-
 end
-
-
 
 end Representation
