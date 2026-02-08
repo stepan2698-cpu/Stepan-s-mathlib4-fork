@@ -207,7 +207,7 @@ def centralMul (g : G) (hg : g ∈ Submonoid.center G) : IntertwiningMap ρ ρ w
 end IntertwiningMap
 
 
-/-- Equivalence between representation is a bijective intertwining map. -/
+/-- Equivalence between representations is a bijective intertwining map. -/
 @[ext]
 structure Equivalence extends IntertwiningMap ρ σ, V ≃+ W
 
@@ -222,23 +222,23 @@ namespace Equivalence
 variable {ρ σ} (φ : Equivalence ρ σ)
 
 /-- Underlying linear isomorphism of an equivalence of representations. -/
-def EquivalencetoLinearEquiv : V ≃ₗ[A] W :=
+def toLinearEquiv : V ≃ₗ[A] W :=
   AddEquiv.toLinearEquiv φ.toAddEquiv φ.toLinearMap.map_smul
 
 @[simp]
 theorem toLinearEquiv_toLinearMap_eq_toIntertwiningMap_toLinearMap :
-  LinearEquiv.toLinearMap φ.EquivalencetoLinearEquiv = φ.toIntertwiningMap.toLinearMap := rfl
+  LinearEquiv.toLinearMap φ.toLinearEquiv = φ.toIntertwiningMap.toLinearMap := rfl
 
 @[simp]
-theorem equivalencetoLinearEquiv_apply (v : V) :
-  (EquivalencetoLinearEquiv φ) v = φ.toIntertwiningMap v := rfl
+theorem toLinearEquiv_apply (v : V) :
+  (toLinearEquiv φ) v = φ.toIntertwiningMap v := rfl
 
-theorem conj (g : G) : σ g = (EquivalencetoLinearEquiv φ).conj (ρ g) := by
+theorem conj (g : G) : σ g = (toLinearEquiv φ).conj (ρ g) := by
   rw [LinearMap.ext_iff]
   intro w
-  simp only [LinearEquiv.conj_apply_apply, equivalencetoLinearEquiv_apply,
+  simp only [LinearEquiv.conj_apply_apply, toLinearEquiv_apply,
     φ.toIntertwiningMap.isIntertwining]
-  rw [← equivalencetoLinearEquiv_apply, LinearEquiv.apply_symm_apply]
+  rw [← toLinearEquiv_apply, LinearEquiv.apply_symm_apply]
 
 end Equivalence
 
