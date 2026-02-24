@@ -5,7 +5,7 @@ Authors: Antoine Labelle
 -/
 module
 
-public import Mathlib.RepresentationTheory.Basic
+public import Mathlib.RepresentationTheory.Intertwining
 public import Mathlib.RepresentationTheory.FDRep
 
 /-!
@@ -62,9 +62,9 @@ namespace Representation
 
 section Invariants
 
-open GroupAlgebra
+open GroupAlgebra Representation
 
-variable {k G V : Type*} [CommSemiring k] [Group G] [AddCommMonoid V] [Module k V]
+variable {k G V : Type*} [CommRing k] [Group G] [AddCommMonoid V] [Module k V]
 variable (ρ : Representation k G V)
 
 /-- The subspace of invariants, consisting of the vectors fixed by all elements of `G`.
@@ -92,6 +92,12 @@ lemma mem_invariants_iff_of_forall_mem_zpowers
     rcases hg γ with ⟨i, rfl⟩
     induction i with | zero => simp | succ i _ => simp_all [zpow_add_one] | pred i h => _
     simpa [neg_sub_comm _ (1 : ℤ), zpow_sub] using congr(ρ g⁻¹ $(h.trans hx.symm))⟩
+
+/-- The invariants of the representation `linHom X.ρ Y.ρ` correspond to the representation
+homomorphisms from `X` to `Y`. -/
+def invariantsEquivRepresentationHom (W : Type*) [AddCommGroup W] [Module k W]
+    (σ : Representation k G W) : (linHom ρ σ).invariants ≃ₗ[k] (IntertwiningMap ρ σ) := by
+  sorry
 
 section
 
