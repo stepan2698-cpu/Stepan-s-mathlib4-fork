@@ -30,13 +30,11 @@ subrepresentations. -/
 abbrev IsIrreducible :=
   IsSimpleOrder (Subrepresentation ρ)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem irreducible_iff_isSimpleModule_asModule :
     IsIrreducible ρ ↔ IsSimpleModule k[G] ρ.asModule := by
   rw [isSimpleModule_iff]
   exact OrderIso.isSimpleOrder_iff Subrepresentation.subrepresentationSubmoduleOrderIso
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isSimpleModule_iff_irreducible_ofModule (M : Type*) [AddCommGroup M] [Module k[G] M] :
     IsSimpleModule k[G] M ↔ IsIrreducible (ofModule (k := k) (G := G) M) := by
   rw [isSimpleModule_iff]
@@ -49,31 +47,55 @@ namespace IsIrreducible
 
 variable {ρ σ} (f : IntertwiningMap ρ σ) [IsIrreducible ρ]
 
-set_option backward.isDefEq.respectTransparency false in
 instance : IsSimpleModule k[G] ρ.asModule :=
   (irreducible_iff_isSimpleModule_asModule ρ).mp inferInstance
 
 open Function IntertwiningMap
 
-set_option backward.isDefEq.respectTransparency false in
 theorem injective_or_eq_zero : Injective f ∨ f = 0 := by
   rw [← LinearEquiv.map_eq_zero_iff (equivLinearMapAsModule ρ σ)]
   exact LinearMap.injective_or_eq_zero (equivLinearMapAsModule ρ σ f)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem bijective_or_eq_zero [IsIrreducible σ] : Bijective f ∨ f = 0 := by
   rw [← LinearEquiv.map_eq_zero_iff (equivLinearMapAsModule ρ σ)]
   exact LinearMap.bijective_or_eq_zero (equivLinearMapAsModule ρ σ f)
 
 variable [FiniteDimensional k V] [IsAlgClosed k]
 
-set_option backward.isDefEq.respectTransparency false in
 variable (f : IntertwiningMap ρ ρ) in
 theorem algebraMap_intertwiningMap_bijective_of_isAlgClosed :
     Bijective (algebraMap k (IntertwiningMap ρ ρ)) := by
   have : Bijective (algebraMap k (Module.End k[G] ρ.asModule)) :=
     IsSimpleModule.algebraMap_end_bijective_of_isAlgClosed k
   exact (Bijective.of_comp_iff' (IntertwiningMap.equivAlgEnd (ρ:=ρ)).bijective _).1 this
+
+omit [IsIrreducible ρ] in
+theorem isIrreducible_iff_finrank_hom_eq_one :
+    IsIrreducible ρ ↔ Module.finrank k (IntertwiningMap ρ ρ) = 1 := by
+  constructor <;> intro h
+  · rw [LinearEquiv.finrank_eq (LinearEquiv.ofBijective (Algebra.linearMap k (IntertwiningMap ρ ρ))
+      algebraMap_intertwiningMap_bijective_of_isAlgClosed).symm]
+    exact CommSemiring.finrank_self k
+  ·
+    sorry
+
+open Classical in
+theorem finrank_hom_isIrreducible_isIrreducible [IsIrreducible σ] :
+    Module.finrank k (IntertwiningMap ρ σ) = if Nonempty (Equiv ρ σ) then 1 else 0 := by
+  by_cases h : Nonempty (Equiv ρ σ) <;> simp only [h, ↓reduceIte]
+  · obtain ⟨φ⟩ := h
+    have : (IntertwiningMap ρ σ) ≃ₗ[k] (IntertwiningMap ρ ρ) :=
+
+      sorry
+    rw [LinearEquiv.finrank_eq this]
+    exact isIrreducible_iff_finrank_hom_eq_one.mp (by assumption)
+  · apply Module.finrank_eq_zero_of_rank_eq_zero
+    rw [rank_zero_iff_forall_zero]
+    intro φ
+    have hφ := bijective_or_eq_zero φ
+    suffices ¬ Bijective φ by tauto
+    contrapose h
+    exact Nonempty.intro (φ.ofBijective h)
 
 set_option backward.isDefEq.respectTransparency false in
 include ρ in

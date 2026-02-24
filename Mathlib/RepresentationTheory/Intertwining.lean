@@ -95,6 +95,8 @@ instance : Module A (IntertwiningMap ρ σ) :=
   fast_instance%
   Function.Injective.module A (coeFnAddMonoidHom ρ σ) DFunLike.coe_injective (coe_smul ρ σ)
 
+instance : AddCommGroup (IntertwiningMap ρ σ) := Module.addCommMonoidToAddCommGroup A
+
 set_option backward.isDefEq.respectTransparency false in
 /-- An intertwining map is the same thing as a linear map over the group ring. -/
 def equivLinearMapAsModule :
@@ -218,6 +220,13 @@ add_decl_doc Equiv.toLinearEquiv
 /-- The intertwining map underlying an equivalence of representations. -/
 add_decl_doc Equiv.toIntertwiningMap
 
+variable {ρ σ} in
+/-- A bijective intertwining map is an equivalence of representations. -/
+noncomputable def IntertwiningMap.ofBijective (f : IntertwiningMap ρ σ) (hf : Function.Bijective f)
+    : Equiv ρ σ where
+  isIntertwining' := f.isIntertwining'
+  toLinearEquiv :=  LinearEquiv.ofBijective f.toLinearMap hf
+
 namespace Equiv
 
 variable {ρ σ} (φ : Equiv ρ σ)
@@ -234,6 +243,17 @@ instance : EquivLike (Equiv ρ σ) V W where
 @[simp] lemma coe_toLinearMap : ⇑φ.toLinearMap = ⇑φ := rfl
 
 @[simp] lemma coe_invFun : φ.invFun = EquivLike.inv φ := rfl
+
+@[simp]
+theorem coe_ofBijective (f : IntertwiningMap ρ σ) (hf : Function.Bijective f) :
+    ⇑(f.ofBijective hf) = ⇑f := rfl
+
+/-- An inverse to an equivalence of representations. -/
+def symm : Equiv σ ρ where
+  toLinearEquiv := φ.toLinearEquiv.symm
+  isIntertwining' g w := by
+    apply φ.toEquiv.injective
+    simp [φ.isIntertwining]
 
 @[simp]
 theorem toLinearEquiv_toLinearMap :
@@ -253,8 +273,51 @@ namespace Equiv
 
 section Group
 
+def linHom.equivcongrRight {G A V W W' : Type*} [Group G] [CommRing A] [AddCommGroup V] [Module A V]
+    [AddCommGroup W] [Module A W] [AddCommGroup W'] [Module A W']
+    {ρ : Representation A G V} {σ : Representation A G W}
+    {σ' : Representation A G W'} (g : Equiv σ σ') :
+    Equiv (linHom ρ σ) (linHom ρ σ') where
+  toLinearEquiv := LinearEquiv.congrRight g.toLinearEquiv
+  isIntertwining' γ f := by
+    ext v
+    simp only [LinearEquiv.congrRight, LinearEquiv.arrowCongr, AddEquiv.toEquiv_eq_coe,
+      Equiv.toFun_as_coe, EquivLike.coe_coe, Equiv.invFun_as_coe, AddEquiv.coe_toEquiv_symm,
+      linHom_apply, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearEquiv.arrowCongrAddEquiv_apply,
+      LinearEquiv.refl_symm, LinearEquiv.refl_toLinearMap, LinearMap.comp_id, LinearMap.coe_comp,
+      coe_toLinearMap, Function.comp_apply]
+    exact g.isIntertwining' γ (f ((ρ γ⁻¹) v))
+
+def linHom.equivcongrLeft {G A V V' W : Type*} [Group G] [CommRing A] [AddCommGroup V] [Module A V]
+    [AddCommGroup W] [Module A W] [AddCommGroup V'] [Module A V']
+    {ρ : Representation A G V} {σ : Representation A G W}
+    {ρ' : Representation A G V'} (f : Equiv ρ ρ') :
+    Equiv (linHom ρ σ) (linHom ρ' σ) where
+  toLinearEquiv := LinearEquiv.congrLeft W A f.toLinearEquiv
+  isIntertwining' γ g := by
+    ext v
+    simp only [linHom_apply, AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, LinearEquiv.coe_coe,
+      LinearEquiv.congrLeft_apply, AddEquiv.toEquiv_eq_coe, Equiv.toFun_as_coe, EquivLike.coe_coe,
+      LinearEquiv.arrowCongrAddEquiv_apply, LinearEquiv.refl_toLinearMap, LinearMap.id_comp,
+      LinearMap.coe_comp, LinearEquiv.coe_symm_mk', coe_invFun, Function.comp_apply]
+    congr
+    symm
+    exact f.symm.isIntertwining' γ⁻¹ v
+
+def IntertwiningMap.equivcongrRight {G A V W W' : Type*} [Group G] [CommRing A] [AddCommGroup V]
+    [Module A V] [AddCommGroup W] [Module A W] [AddCommGroup W'] [Module A W']
+    {ρ : Representation A G V} {σ : Representation A G W}
+    {σ' : Representation A G W'} (g : Equiv σ σ') :
+    (IntertwiningMap ρ σ) ≃ₗ[A] (IntertwiningMap ρ σ') where
+  toFun f := g.toIntertwiningMap.comp f
+  map_add' x y := sorry
+  map_smul' := sorry
+  invFun := sorry
+  left_inv := sorry
+  right_inv := sorry
+
 variable {G k V W : Type*} [Group G] [Field k] [AddCommGroup V] [Module k V] [AddCommGroup W]
-    [Module k W] [FiniteDimensional k V] [FiniteDimensional k W]
+    [Module k W] [FiniteDimensional k V]
     (ρ : Representation k G V) (σ : Representation k G W)
 
 /-- dualTensorHom as an equivalence of representations. -/
